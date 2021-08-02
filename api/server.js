@@ -46,7 +46,7 @@ if (typeof process.env.CLOUDINARY_URL === "undefined") {
   console.log("cloudinary config:");
   console.log(cloudinary.config());
 }
-server.use('/static',express.static('public'));
+server.use("/static", express.static("public"));
 server.use(helmet());
 server.use(cors());
 server.use(morgan("combined"));
