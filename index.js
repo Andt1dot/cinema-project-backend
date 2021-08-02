@@ -1,8 +1,8 @@
+require("dotenv").config();
 const server = require("./api/server");
 
 const PORT = process.env.PORT;
 
-server.listen(PORT, () => {
-  console.log(`\n*** Server is runnning on http://localhost:${PORT} ***\n`);
+server.listen(PORT || 5000, () => {
+  console.log(`\n*** Welcome Olymp Cinema  ***\n`);
 });
-
