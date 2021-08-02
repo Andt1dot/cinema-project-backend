@@ -1,5 +1,4 @@
 const { check, validationResult } = require("express-validator");
-const { run } = require("jest");
 const Users = require("./model");
 
 const validateNewUser = async (req, res, next) => {

@@ -6,7 +6,6 @@
   "scripts": {
     "start": "node index.js",
     "server": "nodemon index.js"
-    
   },
   "author": "cebotari-marin, popa-ecaterina",
   "license": "ISC",
@@ -33,8 +32,6 @@
     "dotenv": "^8.2.0",
     "mongodb-memory-server": "^6.9.6",
     "supertest": "^6.1.3"
-  },
-  "jest": {
-    "testEnvironment": "node"
   }
+ 
 }
