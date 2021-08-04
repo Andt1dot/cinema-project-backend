@@ -42,17 +42,11 @@ const connectDB = async () => {
 
 connectDB();
 
-const whitelist = ["http://localhost:3000", "https://olymp-cinema.vercel.app/"];
-
 const corsOptions = {
-  origin: (origin, callback) => {
-    if (whitelist.indexOf(origin) !== -1) {
-      callback(null, true);
-    } else {
-      callback(new Error("Not allowed by CORS"));
-    }
-  },
-  credentials: true,
+  origin: "*",
+  methods: "GET,HEAD,PUT,PATCH,POST,DELETE",
+  preflightContinue: false,
+  optionsSuccessStatus: 204,
 };
 
 if (typeof process.env.CLOUDINARY_URL === "undefined") {
