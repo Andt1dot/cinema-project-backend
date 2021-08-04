@@ -42,6 +42,19 @@ const connectDB = async () => {
 
 connectDB();
 
+const whitelist = ["http://localhost:3000", "https://olymp-cinema.vercel.app/"];
+
+const corsOptions = {
+  origin: (origin, callback) => {
+    if (whitelist.indexOf(origin) !== -1) {
+      callback(null, true);
+    } else {
+      callback(new Error("Not allowed by CORS"));
+    }
+  },
+  credentials: true,
+};
+
 if (typeof process.env.CLOUDINARY_URL === "undefined") {
   console.warn("!! cloudinary config is undefined !!");
   console.warn("export CLOUDINARY_URL or set dotenv file");
@@ -51,7 +64,7 @@ if (typeof process.env.CLOUDINARY_URL === "undefined") {
 }
 server.use("/static", express.static("public"));
 server.use(helmet());
-server.use(cors());
+server.use(cors(corsOptions));
 server.use(morgan("combined"));
 server.use(cookieParser());
 server.use(express.json());
