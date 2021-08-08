@@ -96,7 +96,7 @@ router.get(
     const result = twofactor.verifyToken(
       process.env.SECRET_2FA,
       req.params.token,
-      (window = 35) //minut
+      (window = 1) //minut
     );
 
     if (!result || !mongoose.Types.ObjectId.isValid(req.params.user_id)) {
@@ -109,7 +109,7 @@ router.get(
       })
         .exec()
         .then((user) => {
-          return res.status(200).redirect("http://localhost:3000/login");
+          return res.status(200).redirect("https://olymp-cinema.vercel.app/login");
         });
     }
   }
