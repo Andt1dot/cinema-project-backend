@@ -7,7 +7,7 @@ const {
   registeredAccess,
   checkUserRegister,
   сheckConfirmationRegister,
-  //validateUserOnPasswordReset,
+  validateUserOnPasswordReset,
   checkUserExist,
 } = require("./middleware");
 const bcrypt = require("bcrypt");
@@ -19,7 +19,6 @@ const mongoose = require("mongoose");
 router.post("/register", validateNewUser, async (req, res, next) => {
   const { firstname, lastname, age, email, username, password, mobile } =
     req.body;
-  console.log("aici");
   new Users({
     firstname,
     lastname,
@@ -96,20 +95,25 @@ router.get(
     const result = twofactor.verifyToken(
       process.env.SECRET_2FA,
       req.params.token,
-      (window = 1) //minut
+      (window = 30) //minut
     );
 
     if (!result || !mongoose.Types.ObjectId.isValid(req.params.user_id)) {
-      //Daca el primeste erorare la token atunci stergem userul din baza.
+      Users.findByIdAndDelete(req.params.user_id)
+        .exec()
+        .then((response) => {
+          return res.sendFile("expiredActivatedProfile.html", {
+            root: "public",
+          });
+        });
 
-      return res.status(500).json("Sorry, invalid token.");
     } else {
       await Users.findByIdAndUpdate(req.params.user_id, {
         status: "Active",
       })
         .exec()
         .then((user) => {
-          return res.status(200).redirect("https://olymp-cinema.vercel.app/login");
+          return res.status(200).redirect(process.env.FRONTEND_APP + "/login");
         });
     }
   }
@@ -119,7 +123,7 @@ router.get(
 router.patch(
   "/reset-password",
   checkUserExist,
-
+  validateUserOnPasswordReset,
   async (req, res, next) => {
     Users.findOneAndUpdate(
       {
@@ -134,7 +138,11 @@ router.patch(
         if (!user) {
           return res.status(404).json({ message: "error" });
         }
-        return res.status(200).json({ message: user });
+        return res.status(200).json({
+          title: "Cod 200: Succes !!!",
+          body: "Parola a fost modificată cu succes !",
+          messageType: 200,
+        });
       });
   }
 );

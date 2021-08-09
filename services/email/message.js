@@ -142,7 +142,7 @@ div[style*="margin: 16px 0;"] {
                             <td bgcolor="#ffffff" align="center" style="padding: 20px 30px 60px 30px;">
                                 <table border="0" cellspacing="0" cellpadding="0">
                                     <tr>
-                                        <td align="center" style="border-radius: 3px;" bgcolor="#FFA73B"><a href="https://api-olymp-cinema.herokuapp.com/api/auth/register-confirm/${token.token}/${user_id}" target="_blank" style="font-size: 20px; font-family: Helvetica, Arial, sans-serif; color: #ffffff; text-decoration: none; color: #ffffff; text-decoration: none; padding: 15px 25px; border-radius: 2px; border: 1px solid #FFA73B; display: inline-block;">Confirmare profil</a></td>
+                                        <td align="center" style="border-radius: 3px;" bgcolor="#FFA73B"><a href="${process.env.BACKEND_APP}/api/auth/register-confirm/${token.token}/${user_id}" target="_blank" style="font-size: 20px; font-family: Helvetica, Arial, sans-serif; color: #ffffff; text-decoration: none; color: #ffffff; text-decoration: none; padding: 15px 25px; border-radius: 2px; border: 1px solid #FFA73B; display: inline-block;">Confirmare profil</a></td>
                                     </tr>
                                 </table>
                             </td>
@@ -539,7 +539,7 @@ const messageResetPassword = async (email, user_id) => {
      exactly; -ms-text-size-adjust: 100%; -webkit-text-size-adjust: 100%;
      font-family: 'Asap', Helvetica, sans-serif; font-size: 16px; padding-top:24px;
      padding-right:48px; padding-bottom:24px; padding-left:48px;" valign="middle">
-                                            <a class="mcnButton" href="olymp-cinema.vercel.app/reset-password/${user_id}" style="mso-line-height-rule: exactly;
+                                            <a class="mcnButton" href="${process.env.FRONTEND_APP}/reset-password/${user_id}" style="mso-line-height-rule: exactly;
      -ms-text-size-adjust: 100%; -webkit-text-size-adjust: 100%; display: block; color: #f57153;
      font-weight: normal; text-decoration: none; font-weight: normal;letter-spacing:
      1px;line-height: 100%;text-align: center;text-decoration: none;color:

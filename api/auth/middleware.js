@@ -2,6 +2,7 @@ const Users = require("../user/model");
 const Notifications = require("../notification/model");
 const jwt = require("jsonwebtoken");
 const { check, validationResult } = require("express-validator");
+const bcrypt = require("bcrypt");
 
 const registeredAccess = async (req, res, next) => {
   const token = req.headers.authorization;
@@ -162,6 +163,55 @@ const checkUserExist = async (req, res, next) => {
 // acest middleware "validateUserOnPasswordReset" cauta user-ul in baza de date, conform email-ului furnizat.
 // daca il gaseste => trimite mesaj cu linkul de resetare a parolei, daca nu => message: "You don`t have account"
 
+const validateUserOnPasswordReset = async (req, res, next) => {
+  await check("new_password")
+    .notEmpty()
+    .withMessage("%Cîmpul parola este obligatoriu%")
+    .run(req);
+
+  await check("new_password")
+    .isLength({ min: 8, max: 15 })
+    .withMessage(
+      "%Parola trebuie să conțină o lugime cuprinsă între 8-15 caractere%"
+    )
+    .run(req);
+
+  await check("new_password")
+    .matches(/\d/)
+    .withMessage("%Parola trebuie să conțină cel puțin un număr%")
+    .run(req);
+
+  await check("new_password")
+    .matches(/[!@#$%^&*(),.?":{}|<>]/)
+    .withMessage("%Parola trebuie să conțină cel puțin un caracter special %")
+    .run(req);
+
+  await check("new_password")
+    .custom((new_password) => {
+      return Users.findById(req.body.user_id).then((user) => {
+        bcrypt.compare(new_password, user.password).then((passwordRepeat) => {
+          if (passwordRepeat) {
+            return res
+              .status(400)
+              .json("%Parola este identică cu cea curentă%");
+          }
+        });
+      });
+    })
+    .run(req);
+
+  const errors = validationResult(req);
+
+  if (!errors.isEmpty()) {
+    const errorMessage = errors.array().map((error) => {
+      return error.msg;
+    });
+
+    return res.status(400).json(errorMessage);
+  } else {
+    next();
+  }
+};
 // const validateUserOnPasswordReset = async (req, res, next) => {
 //   console.log("email", req.body.email);
 //   await Users.findOne({ email: req.body.email, status: "Active" })
@@ -196,6 +246,6 @@ module.exports = {
   staffAccess,
   validateUserIdentity,
   сheckConfirmationRegister,
-  //validateUserOnPasswordReset,
+  validateUserOnPasswordReset,
   checkUserExist,
 };

@@ -81,7 +81,7 @@ server.use("/api/notifications", notificationRouter);
 server.use(mediaRouter);
 
 server.get("/", (req, res) => {
-  res.send(`<h1>Welcome to Olymp Cinema !</h1>`);
+  res.send(`<h1>Welcome to Olymp Cinema Web Service !</h1>`);
 });
 
 server.use((err, req, res, next) => {
