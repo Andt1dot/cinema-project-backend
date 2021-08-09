@@ -113,7 +113,7 @@ router.get(
       })
         .exec()
         .then((user) => {
-          return res.redirect(200,process.env.FRONTEND_APP + "/login");
+          return res.redirect(process.env.FRONTEND_APP + "/login");
         });
     }
   }
