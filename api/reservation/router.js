@@ -1,6 +1,7 @@
 const router = require("express").Router();
 const Reservations = require("./model");
 const Seats = require("../seat/model");
+
 const {
   checkReservationExists,
   validateNewReservation,
@@ -13,14 +14,47 @@ const {
 } = require("../auth/middleware");
 
 router.get("/", staffAccess, async (req, res, next) => {
-  Reservations.find()
-    .populate("premiere", "-active")
-    .populate("seat")
-    .exec()
-    .then((reservations) => {
-      res.status(200).json(reservations);
-    })
-    .catch(next);
+  try {
+    const limit = req.query.limit ? parseInt(req.query.limit) : 10;
+    const offset = req.query.skip ? parseInt(req.query.skip) : 0;
+
+    const reservations = await Reservations.find({})
+      .populate({
+        path: "seats._id",
+        model: Seats,
+      })
+      .populate({ path: "premiere", populate: { path: "movie" } })
+      .skip(offset)
+      .limit(limit);
+
+    const reservationsCount = await Reservations.countDocuments();
+
+    const totalPages = Math.ceil(reservationsCount / limit);
+    const currentPage = Math.ceil(reservationsCount % offset);
+
+    res.status(200).send({
+      data: reservations,
+      paging: {
+        total: reservationsCount,
+        page: currentPage,
+        pages: totalPages,
+      },
+    });
+  } catch (err) {
+    next(err);
+  }
+
+  // Reservations.find()
+  //   .populate({
+  //     path: "seats._id",
+  //     model: Seats,
+  //   })
+  //   .populate({ path: "premiere", populate: { path: "movie" } })
+
+  //   .then((reservations) => {
+  //     res.status(200).json(reservations);
+  //   })
+  //   .catch(next);
 });
 
 router.get(
@@ -32,7 +66,7 @@ router.get(
       reserv_date: req.query.date,
       reserv_hour: req.query.hour,
     })
-      
+
       .distinct("seats")
       .exec()
       .then((reservations) => {
@@ -63,6 +97,7 @@ router.get(
       .catch(next);
   }
 );
+
 router.get(
   "/:user_id",
   registeredAccess,

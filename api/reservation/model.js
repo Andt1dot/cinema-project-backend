@@ -22,7 +22,7 @@ const reservationSchema = new mongoose.Schema(
     parent_user: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "Users",
-      require: true,
+      required: true,
     },
 
     reserv_date: {
