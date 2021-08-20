@@ -96,14 +96,17 @@ const checkUserRegister = async (req, res, next) => {
       return Users.findOne({
         email,
       }).then((user) => {
+        if (!user) {
+          return res.status(404).json("%Profil inexistent%");
+        }
+
         if (user.status === "Active") {
           req.user = user;
-        } else if (user.status === "Pending") {
+        }
+        if (user.status === "Pending") {
           return res
             .status(401)
             .json("%Profil neactivat.Vă rugăm verificați adresa electronică!%");
-        } else {
-          return res.status(404).json("%Profil inexistent%");
         }
       });
     })
