@@ -96,20 +96,24 @@ const checkUserRegister = async (req, res, next) => {
       return Users.findOne({
         email,
       }).then((user) => {
-        if (!user) {
-          return res.status(404).json("%Profil inexistent%");
-        }
-
-        if (user.status === "Active") {
-          req.user = user;
-        }
-        if (user.status === "Pending") {
-          return res
-            .status(401)
-            .json("%Profil neactivat.Vă rugăm verificați adresa electronică!%");
+        if (user) {
+          if (user.status === "Active") {
+            req.user = user;
+          }
+          if (user.status === "Pending") {
+            return res
+              .status(401)
+              .json(
+                "%Profil neactivat.Vă rugăm verificați adresa electronică!%"
+              );
+          }
+        } else {
+          check("email").isEmpty().withMessage("%Profil inexistent%").run(req);
+          // return res.status(404).json("%Profil inexistent%");
         }
       });
     })
+
     .run(req);
 
   const errors = validationResult(req);
