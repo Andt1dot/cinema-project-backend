@@ -3,35 +3,42 @@ const Notifications = require("./model");
 
 const validateNewNotification = async (req, res, next) => {
   await check("title")
-    .trim()
     .notEmpty()
     .withMessage("Title for notification is required.")
+    .run(req);
+
+  await check("title")
     .isLength({ min: 3 })
-    .withMessage("Title for notification is not clear.")
+    .withMessage("Title for notification is required.")
     .run(req);
 
   await check("content")
-    .trim()
     .notEmpty()
     .withMessage("Content for notification is required.")
+    .run(req);
+
+  await check("content")
     .isLength({ min: 10 })
-    .withMessage("Content for notification is not clear.")
+    .withMessage("Content for notification is required.")
     .run(req);
 
   await check("notification_type")
-    .trim()
     .notEmpty()
     .withMessage("Notification type is required.")
-    .isIn(["Promo", "Auth", "Ticket", "Reset"])
-    .withMessage("Undefined notification type.")
-    .isString()
-    .withMessage("Type error for notification.")
+    .run(req);
+
+  await check("notification_type")
+    .isIn(["Promo", "Auth", "Ticket", "Reset", "Support"])
+    .withMessage("Notification type is undefined")
     .run(req);
 
   const errors = validationResult(req);
-
   if (!errors.isEmpty()) {
-    res.status(400).json({ error: errors.array() });
+    const errorMessage = errors.array().map((error) => {
+      return error.msg;
+    });
+
+    return res.status(400).json(errorMessage);
   } else {
     next();
   }

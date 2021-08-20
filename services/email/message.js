@@ -188,6 +188,16 @@ const notificationSendEmail = async (email, subject, content) => {
   return await configEmail.sendMail(msg);
 };
 
+const inBoxMessage = async (email, content, title) => {
+  const msg = {
+    from: `"Guest Sender *********${email}********* - " <${email}>`,
+    to: process.env.EMAIL_PROFILE,
+    subject: title,
+    html: `<p style="color: Red; font-size: 46px;"> ${content}</p>`,
+  };
+  return await configEmail.sendMail(msg);
+};
+
 const messageResetPassword = async (email, user_id) => {
   const msg = {
     from: `"Olymp Cinema" <${process.env.EMAIL_PROFILE}>`,
@@ -808,4 +818,5 @@ module.exports = {
   notificationSendEmail,
   messageResetPassword,
   messageSendTicket,
+  inBoxMessage,
 };

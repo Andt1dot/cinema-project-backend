@@ -12,10 +12,19 @@ const notificationSchema = new mongoose.Schema(
     },
     notification_type: {
       type: String,
-      enum: ["Promo", "Auth", "Ticket", "Reset"],
+      enum: ["Promo", "Auth", "Ticket", "Reset", "Support"],
       require: true,
     },
     users: [{ type: mongoose.Schema.Types.ObjectId, ref: "Users" }],
+
+    connection_type: {
+      type: Number,
+      require: true,
+      default: 0,
+    },
+    email: {
+      type: String,
+    },
   },
 
   {

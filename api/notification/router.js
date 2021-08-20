@@ -1,5 +1,7 @@
 const router = require("express").Router();
 const Notifications = require("./model");
+const { inBoxMessage } = require("../../services/email/message");
+
 const {
   checkNotificationExists,
   validateNewNotification,
@@ -73,6 +75,29 @@ router.post(
       .catch(next);
   }
 );
+
+router.post("/guest", validateNewNotification, async (req, res, next) => {
+  console.log(req.body);
+  const { title, email, content, connection_type, notification_type } =
+    req.body;
+  new Notifications({
+    title,
+    email,
+    content,
+    connection_type,
+    notification_type,
+  })
+    .save()
+    .then((newNotification) => {
+      inBoxMessage(email, content, title);
+      res.status(201).json({
+        title: "Cod 200: Succes !!!",
+        body: "Vă mulțumim, mesajul a fost expediat cu succes către echipa - Olymp Cinema !!!",
+        messageType: 200,
+      });
+    })
+    .catch(next);
+});
 
 router.put(
   "/:notification_id",
