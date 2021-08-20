@@ -42,13 +42,13 @@ router.post("/register", validateNewUser, async (req, res, next) => {
     .catch(next);
 });
 
-router.post("/login", checkUserRegister, async (req, res, next) => {
+router.post("/login", checkUserRegister, (req, res, next) => {
   console.log("a intrat", req.user);
   const { _id, email, username, password, role, status } = req.user;
 
-  const passwordValid = await bcrypt.compare(req.body.password, password);
+  const passwordValid = bcrypt.compare(req.body.password, password);
   if (!passwordValid) {
-    return res.status(401).json("%Invalid credentials%");
+    return res.status(401).json("%Login sau parola greșită%");
   }
 
   const token = jwt.sign(
@@ -106,7 +106,6 @@ router.get(
             root: "public",
           });
         });
-
     } else {
       await Users.findByIdAndUpdate(req.params.user_id, {
         status: "Active",

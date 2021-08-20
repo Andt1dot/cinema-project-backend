@@ -65,30 +65,30 @@ const checkUserRegister = async (req, res, next) => {
   //----------------------Password-----------------------------------------//
   await check("password")
     .notEmpty()
-    .withMessage("%Password is required%")
+    .withMessage("%Parola obligatoriu%")
     .run(req);
 
-  await check("email").notEmpty().withMessage("%Email is required%").run(req);
+  await check("email").notEmpty().withMessage("%Email obligatoriu%").run(req);
 
   await check("password")
     .isLength({ min: 8, max: 15 })
-    .withMessage("%Your password should have min and max length between 8-15%")
+    .withMessage("%Parola trebuie să conțină de la 8-15 caractere%")
     .run(req);
 
   await check("password")
     .matches(/\d/)
-    .withMessage("%Your password should have at least one number%")
+    .withMessage("%Parola trebuie să conțină minim un număr%")
     .run(req);
 
   await check("password")
     .matches(/[!@#$%^&*(),.?":{}|<>]/)
-    .withMessage("%Your password should have at least one special character%")
+    .withMessage("%Parola trebuie să conțină minim un caracter special%")
     .run(req);
   // ------------------------Email---------------------------------//
 
   await check("email")
     .isEmail()
-    .withMessage("%The specified email does not match the rules%")
+    .withMessage("%Email nu corespunde regulilor%")
     .run(req);
 
   await check("email")
@@ -101,9 +101,9 @@ const checkUserRegister = async (req, res, next) => {
         } else if (user.status === "Pending") {
           return res
             .status(401)
-            .json("%Pending Account.Please verify your email!%");
+            .json("%Profil neactivat.Vă rugăm verificați adresa electronică!%");
         } else {
-          return res.status(404).json("%Account not exist%");
+          return res.status(404).json("%Profil inexistent%");
         }
       });
     })
