@@ -18,7 +18,13 @@ router.get(
   checkSeatExists,
   async (req, res, next) => {
     try {
-      const foundSeat = await Seats.findById(req.params.seat_id).exec();
+      const foundSeat = await Seats.findById(req.params.seat_id)
+        .populate({
+          path: "hall",
+          select: "name -_id",
+          populate: { path: "cinema", select: "name -_id" },
+        })
+        .exec();
       res.status(200).json(foundSeat);
     } catch (err) {
       next(err);

@@ -9,10 +9,12 @@ const movieSchema = new mongoose.Schema(
     original_title: {
       type: String,
     },
-    genre: {
-      type: Array,
-      required: true,
-    },
+    genre: [
+      {
+        type: String,
+        required: true,
+      },
+    ],
     director: {
       type: String,
     },
@@ -27,9 +29,8 @@ const movieSchema = new mongoose.Schema(
       type: String,
       required: true,
     },
-    actors: {
-      type: Array,
-    },
+    actors: [String],
+
     age_restrict: {
       type: String,
       required: true,

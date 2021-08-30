@@ -5,12 +5,28 @@ const { validateMovie, checkMovieExists } = require("./middleware");
 const { staffAccess } = require("../auth/middleware");
 
 router.get("/", staffAccess, async (req, res, next) => {
-  Movies.find()
-    .exec()
-    .then((movies) => {
-      res.status(200).json(movies);
-    })
-    .catch(next);
+  try {
+    const limit = req.query.limit ? parseInt(req.query.limit) : 10;
+    const offset = req.query.skip ? parseInt(req.query.skip) : 0;
+
+    const movies = await Movies.find({}).skip(offset).limit(limit);
+
+    const moviesCount = await Movies.countDocuments();
+
+    const totalPages = Math.ceil(moviesCount / limit);
+    const currentPage = Math.ceil(moviesCount % offset);
+
+    res.status(200).send({
+      data: movies,
+      paging: {
+        total: moviesCount,
+        page: currentPage,
+        pages: totalPages,
+      },
+    });
+  } catch (err) {
+    next(err);
+  }
 });
 
 router.get(
@@ -50,7 +66,35 @@ router.get(
 );*/
 
 router.post("/", staffAccess, validateMovie, async (req, res, next) => {
-  new Movies(req.body)
+  const {
+    title,
+    original_title,
+    genre,
+    age_restrict,
+    director,
+    release_date,
+    rating,
+    description,
+    actors,
+    duration,
+    image_url,
+    video_url,
+  } = req.body;
+
+  new Movies({
+    title,
+    original_title,
+    genre: genre.split(","),
+    age_restrict,
+    director,
+    release_date,
+    rating,
+    description,
+    actors: actors.split(","),
+    duration,
+    image_url,
+    video_url,
+  })
     .save()
     .then((newMovie) => {
       res.status(201).json(newMovie);
